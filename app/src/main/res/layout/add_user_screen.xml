@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.test.genplaza.users.ui.main.AddUserVM" />
+            type="com.test.genplaza.users.viewmodel.AddUserVM" />
 
     </data>
 
