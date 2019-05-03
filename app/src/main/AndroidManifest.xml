@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.test.genplaza.users.ui.main.ImageViewerActivity"
+            android:name="com.test.genplaza.users.AddUserActivity"
             android:screenOrientation="portrait">
 
         </activity>

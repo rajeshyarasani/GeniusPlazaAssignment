@@ -1,5 +1,6 @@
 package com.test.genplaza.users;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -128,5 +129,10 @@ UsersResponse usersResponse = mainViewModel.imageDataList.get();
     public void clearWindowFlags() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //        Utils.hideKeyboard(this);
+    }
+
+    public void launchAddUserActivity() {
+        Intent intent = new Intent(this, AddUserActivity.class);
+        startActivity(intent);
     }
 }

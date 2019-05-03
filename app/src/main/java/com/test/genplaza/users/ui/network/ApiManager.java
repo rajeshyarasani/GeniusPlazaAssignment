@@ -66,6 +66,11 @@ public class ApiManager {
         userCall.enqueue(callback);
     }
 
+    public void fetchUser(NewUser user, Callback<NewUser> callback) {
+        Call<NewUser> userCall = service.createUser(user);
+        userCall.enqueue(callback);
+    }
+
     public OkHttpClient.Builder getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains

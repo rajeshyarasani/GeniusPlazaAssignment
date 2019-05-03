@@ -27,6 +27,19 @@
             android:background="#ffffff"
             android:elevation="4dp">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:onClick="@{()->viewModel.addUser()}"
+                    android:padding="10dp"
+                    android:text="Add User"
+                    android:textStyle="bold" />
+            </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
         <android.support.v7.widget.RecyclerView
@@ -49,18 +62,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Users not found"
             android:gravity="center"
+            android:text="Users not found"
             android:visibility="@{viewModel.noImages?View.VISIBLE:View.GONE}" />
 
         <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="end|bottom"-->
-            <!--android:background=""-->
-            <!--android:src="@drawable/ic_my_icon"-->
-            <!--android:layout_margin="16dp" />-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:background=""-->
+        <!--android:src="@drawable/ic_my_icon"-->
+        <!--android:layout_margin="16dp" />-->
 
     </RelativeLayout>
 </layout>

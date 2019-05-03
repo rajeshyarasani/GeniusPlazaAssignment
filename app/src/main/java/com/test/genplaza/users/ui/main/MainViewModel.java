@@ -42,6 +42,10 @@ public class MainViewModel extends BaseObservable {
 
     private int pageNumber = 1;
 
+    public void addUser() {
+        mainActivity.launchAddUserActivity();
+    }
+
     public void loadUsers(boolean isFirstTime) {
         if (isFirstTime) {
             showLoader.set(true);
@@ -79,7 +83,7 @@ public class MainViewModel extends BaseObservable {
             noImages.set(true);
         }
         imageDataList.set(usersResponse);
-        pageNumber = usersResponse.getPage()+1;
+        pageNumber = usersResponse.getPage() + 1;
     }
 
     /**
