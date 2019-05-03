@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -12,6 +13,10 @@ import com.test.genplaza.users.databinding.MainActivityBinding;
 import com.test.genplaza.users.ui.main.ImageListAdapter;
 import com.test.genplaza.users.ui.main.MainViewModel;
 import com.test.genplaza.users.ui.main.PaginationGridLayoutManager;
+import com.test.genplaza.users.ui.main.PaginationLinearLayoutManager;
+import com.test.genplaza.users.ui.main.PaginationScrollListener;
+import com.test.genplaza.users.ui.main.UserListAdapter;
+import com.test.genplaza.users.ui.network.UsersResponse;
 
 public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel = null;
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Users List");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        mainViewModel.loadUsers(1);
+        mainViewModel.loadUsers(true);
         mainViewModel.imageDataList.addOnPropertyChangedCallback(imageDataListChangeListener);
         setImageListAdapter();
 
@@ -44,23 +49,61 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPropertyChanged(android.databinding.Observable observable, int i) {
             if (imagesAdapter != null) {
-                imagesAdapter.refreshAdapter(mainViewModel.imageDataList.get());
+//                imagesAdapter.refreshAdapter(mainViewModel.imageDataList.get());
+UsersResponse usersResponse = mainViewModel.imageDataList.get();
+                isLastPage = usersResponse.getPage() * usersResponse.getPerPage() > usersResponse.getTotal();
+//                if (!isLastPage)
+//                    lastKey = usersResponse.getPage();
+
+                if (usersResponse.getPage()==1) {
+                    imagesAdapter.addAll(usersResponse.getUserList());
+
+                    if (!isLastPage) imagesAdapter.addLoadingFooter();
+                }else {
+                    imagesAdapter.removeLoadingFooter();
+                    isLoading = false;
+
+                    imagesAdapter.addAll(usersResponse.getUserList());
+
+                    if (!isLastPage)
+                        imagesAdapter.addLoadingFooter();
+                }
             }
         }
     };
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    ImageListAdapter imagesAdapter = null;
+    UserListAdapter imagesAdapter = null;
 
     private void setImageListAdapter() {
-        PaginationGridLayoutManager linearLayoutManager = new PaginationGridLayoutManager(this, 3);
-
         RecyclerView recyclerView = mDataBinding.rvUsers;
+
+//        PaginationGridLayoutManager linearLayoutManager = new PaginationGridLayoutManager(this, 3);
+        PaginationLinearLayoutManager linearLayoutManager = new PaginationLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        imagesAdapter = new ImageListAdapter(this, mainViewModel.imageDataList.get());
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        imagesAdapter = new UserListAdapter(this, mainViewModel.imageDataList.get().getUserList());
         recyclerView.setAdapter(imagesAdapter);
+        recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                mainViewModel.loadUsers(false);
+            }
 
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
     }
 
     @Override

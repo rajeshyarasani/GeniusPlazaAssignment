@@ -36,7 +36,7 @@ public class User {
     }
 
     public String getUserName() {
-        if (firstName.isEmpty() && lastName.isEmpty()) {
+        if (!firstName.isEmpty() && !lastName.isEmpty()) {
             return firstName + " " + lastName;
         } else if (firstName.isEmpty()) {
             return lastName;

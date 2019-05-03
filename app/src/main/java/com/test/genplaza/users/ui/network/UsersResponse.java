@@ -45,6 +45,6 @@ public class UsersResponse {
     }
 
     public List<User> getUserList() {
-        return userList;
+        return userList!=null?userList:new ArrayList<User>();
     }
 }

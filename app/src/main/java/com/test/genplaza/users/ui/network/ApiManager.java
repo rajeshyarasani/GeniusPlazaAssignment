@@ -1,4 +1,5 @@
 package com.test.genplaza.users.ui.network;
+
 import java.io.IOException;
 import java.security.cert.CertificateException;
 
@@ -22,10 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class ApiManager {
- 
+
     private static ApiClientListener service;
     private static ApiManager apiManager;
- 
+
     private ApiManager() {
         Interceptor interceptor = new Interceptor() {
             @Override
@@ -49,19 +50,19 @@ public class ApiManager {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
- 
+
         service = retrofit.create(ApiClientListener.class);
     }
- 
+
     public static ApiManager getInstance() {
         if (apiManager == null) {
             apiManager = new ApiManager();
         }
         return apiManager;
     }
- 
-    public void createUser(int pageNumber, Callback<UsersResponse> callback) {
-        Call<UsersResponse> userCall = service.getImageSearchResponse(pageNumber);
+
+    public void fetchUserList(int pageNumber, Callback<UsersResponse> callback) {
+        Call<UsersResponse> userCall = service.getUsersResponse(pageNumber, 5); // 5 users per page
         userCall.enqueue(callback);
     }
 

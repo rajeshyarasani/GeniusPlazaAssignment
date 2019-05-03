@@ -3,7 +3,6 @@ package com.test.genplaza.users.ui.main;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.text.Editable;
 import android.util.Log;
 
 import com.test.genplaza.users.MainActivity;
@@ -33,7 +32,7 @@ public class MainViewModel extends BaseObservable {
     public ObservableBoolean noImages = new ObservableBoolean(false);
 
     //    public ObservableField<String> searchData = new ObservableField<>("");
-    public ObservableField<List<User>> imageDataList = new ObservableField<List<User>>(new ArrayList<User>());
+    public ObservableField<UsersResponse> imageDataList = new ObservableField<UsersResponse>(new UsersResponse());
 
     private MainActivity mainActivity;
 
@@ -41,9 +40,14 @@ public class MainViewModel extends BaseObservable {
         this.mainActivity = mainActivity;
     }
 
-    public void loadUsers(int pageNumber) {
+    private int pageNumber = 1;
+
+    public void loadUsers(boolean isFirstTime) {
+        if (isFirstTime) {
+            showLoader.set(true);
+        }
         ApiManager apiManager = ApiManager.getInstance();
-        apiManager.createUser(pageNumber, new Callback<UsersResponse>() {
+        apiManager.fetchUserList(pageNumber, new Callback<UsersResponse>() {
             @Override
             public void onResponse(Call<UsersResponse> call, Response<UsersResponse> response) {
                 onSuccess(call, response);
@@ -74,53 +78,8 @@ public class MainViewModel extends BaseObservable {
         if (usersResponse == null || usersResponse.getUserList() == null || usersResponse.getUserList().isEmpty()) {
             noImages.set(true);
         }
-        imageDataList.set(usersResponse.getUserList());
-    }
-
-    /**
-     * Load images from api call
-     */
-    public void loadUsersOnApiCall() {
-        Log.d(TAG, "on search click");
-        ApiClientListener apiClientListener = NetworkModule.getRetrofitInstance().create(ApiClientListener.class);
-//        String searchData = this.searchData.get();
-//        Log.d(TAG, "searchData is " + searchData);
-//        if (searchData == null || searchData.isEmpty()) {
-//            return;
-//        }
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://reqres.in/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        mainActivity.setUntouchableWindowFlag();
-        Call<UsersResponse> imageSearchResponse = apiClientListener.getImageSearchResponse(1);
-        showLoader.set(true);
-        imageSearchResponse.enqueue(new Callback<UsersResponse>() {
-            @Override
-            public void onResponse(Call<UsersResponse> call, Response<UsersResponse> response) {
-                if (response == null || response.body() == null || (response != null && response.errorBody() != null)) {
-                    onFailure(call, null);
-                    return;
-                }
-                mainActivity.clearWindowFlags();
-                showLoader.set(false);
-                noImages.set(false);
-                UsersResponse usersResponse = response.body();
-                if (usersResponse == null || usersResponse.getUserList() == null || usersResponse.getUserList().isEmpty()) {
-                    noImages.set(true);
-                }
-                imageDataList.set(usersResponse.getUserList());
-            }
-
-            @Override
-            public void onFailure(Call<UsersResponse> call, Throwable t) {
-                mainActivity.clearWindowFlags();
-                showLoader.set(false);
-                noImages.set(true);
-            }
-        });
+        imageDataList.set(usersResponse);
+        pageNumber = usersResponse.getPage()+1;
     }
 
     /**

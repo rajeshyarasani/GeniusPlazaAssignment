@@ -49,7 +49,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final String imgUrl;
         holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_default_image_thumbnail));
-        if (userList==null || userList.isEmpty() || userList.get(position).getAvatar() == null
+        if (userList == null || userList.isEmpty() || userList.get(position).getAvatar() == null
                 || userList.get(position).getAvatar().isEmpty()) {
             holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_default_image_thumbnail));
             imgUrl = "";
@@ -61,7 +61,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                     .placeholder(R.drawable.ic_default_image_thumbnail)
                     .into(holder.imageView);
         }
-
 
 
         //start full screen image activity
